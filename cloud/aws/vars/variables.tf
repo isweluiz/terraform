@@ -61,23 +61,23 @@ variable "ansible_key_name" {
 }
 
 variable "service_name" {
-  type = string
+  type    = string
   default = "infra"
-  
+
 }
 
 variable "team_name" {
-  type = string
+  type    = string
   default = "infra"
-  
+
 }
 
 ## GH RUNNER 
 
 variable "service_name_gh" {
-  type = string
+  type    = string
   default = "infra"
-  
+
 }
 
 variable "instances_count_gh_runner" {

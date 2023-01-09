@@ -1,5 +1,5 @@
 variable "main_zone" {
-    type = string
+  type = string
 }
 
 variable "aws_main_region" {
@@ -8,7 +8,7 @@ variable "aws_main_region" {
 }
 
 variable "env" {
-  type = string
+  type    = string
   default = "stage"
 }
 

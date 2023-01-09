@@ -18,9 +18,9 @@ resource "aws_instance" "docker" {
   }
 
   tags = {
-    Name = format("%02s-%s.%s.%s.aws",count.index + 1, var.service_name,var.env, var.aws_main_region)
-    team = var.team_name
-    environment  = var.env
+    Name        = format("%02s-%s.%s.%s.aws", count.index + 1, var.service_name, var.env, var.aws_main_region)
+    team        = var.team_name
+    environment = var.env
   }
 }
 
@@ -46,8 +46,8 @@ resource "aws_instance" "gh_runner_deploy" {
   }
 
   tags = {
-    Name = format("%02s-%s.%s.%s.aws",count.index + 1, var.service_name_gh,var.env, var.aws_main_region)
-    team = var.team_name
-    environment  = var.env
+    Name        = format("%02s-%s.%s.%s.aws", count.index + 1, var.service_name_gh, var.env, var.aws_main_region)
+    team        = var.team_name
+    environment = var.env
   }
 }

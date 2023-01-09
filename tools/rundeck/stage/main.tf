@@ -14,16 +14,16 @@ provider "rundeck" {
 }
 
 resource "rundeck_project" "terraform" {
-  name        = "terraform"
-  description = "Sample Application Created by Terraform Plan"
-  ssh_key_storage_path = "${rundeck_private_key.terraform.path}"
+  name                 = "terraform"
+  description          = "Sample Application Created by Terraform Plan"
+  ssh_key_storage_path = rundeck_private_key.terraform.path
   resource_model_source {
     type = "file"
     config = {
       format = "resourcexml"
       # This path is interpreted on the Rundeck server.
-      file = "/home/rundeck/resources.xml"
-      writable = "true"
+      file                      = "/home/rundeck/resources.xml"
+      writable                  = "true"
       generateFileAutomatically = "true"
     }
   }
@@ -34,7 +34,7 @@ resource "rundeck_project" "terraform" {
 
 resource "rundeck_job" "bounceweb" {
   name              = "Bounce All Web Servers"
-  project_name      = "${rundeck_project.terraform.name}"
+  project_name      = rundeck_project.terraform.name
   node_filter_query = "tags: web"
   description       = "Restart the service daemons on all the web servers"
 
@@ -60,5 +60,5 @@ data "local_file" "acl" {
 resource "rundeck_acl_policy" "example" {
   name = "ExampleAcl.aclpolicy"
 
-  policy = "${data.local_file.acl.content}"
+  policy = data.local_file.acl.content
 }

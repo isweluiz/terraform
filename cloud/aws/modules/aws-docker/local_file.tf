@@ -1,28 +1,28 @@
 resource "local_file" "inventory_docker" {
-  count           = length(aws_instance.docker)
-  content         = templatefile(
-                    "${path.module}/ansible_inventory.tftpl",
-                        { 
-                            user = "ubuntu"
-                            prefix = "docker"
-                            nodes = aws_instance.docker.*.public_ip
-                        }
-                     )
+  count = length(aws_instance.docker)
+  content = templatefile(
+    "${path.module}/ansible_inventory.tftpl",
+    {
+      user   = "ubuntu"
+      prefix = "docker"
+      nodes  = aws_instance.docker.*.public_ip
+    }
+  )
   #filename        = "${path.module}/inventory"
   filename        = "/home/lpereira/Documents/infra-study/gh-actions-docker-py/ansible/docker"
   file_permission = 0744
 }
 
 resource "local_file" "inventory_runner" {
-  count           = length(aws_instance.gh_runner_deploy)
-  content         = templatefile(
-                    "${path.module}/ansible_inventory.tftpl",
-                        { 
-                            user = "ubuntu"
-                            prefix = "runner"
-                            nodes = aws_instance.gh_runner_deploy.*.public_ip
-                        }
-                     )
+  count = length(aws_instance.gh_runner_deploy)
+  content = templatefile(
+    "${path.module}/ansible_inventory.tftpl",
+    {
+      user   = "ubuntu"
+      prefix = "runner"
+      nodes  = aws_instance.gh_runner_deploy.*.public_ip
+    }
+  )
   filename        = "/home/lpereira/Documents/infra-study/gh-actions-docker-py/ansible/runner"
   file_permission = 0744
 }
