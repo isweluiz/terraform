@@ -1,8 +1,10 @@
 [![Check terraform file formatting](https://github.com/isweluiz/terraform/actions/workflows/01.terraform_check.yml/badge.svg)](https://github.com/isweluiz/terraform/actions/workflows/01.terraform_check.yml)
 
-![terraform](https://content.hashicorp.com/api/assets?product=tutorials&version=main&asset=public%2Fimg%2Fterraform%2Fautomation%2Ftfc-gh-actions-workflow.png)
 
 ### Terraform - My personal and Public notes
+
+![terraform](https://content.hashicorp.com/api/assets?product=tutorials&version=main&asset=public%2Fimg%2Fterraform%2Fautomation%2Ftfc-gh-actions-workflow.png)
+
 
 - [Terraform](https://learn.hashicorp.com/terraform)
 - [Terraform Full Feature Price](https://www.datocms-assets.com/2885/1602500234-terraform-full-feature-pricing-tablev2-1.pdf)
