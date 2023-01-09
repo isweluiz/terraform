@@ -1,13 +1,13 @@
 resource "local_file" "inventory" {
-  count           = length(aws_instance.instance_web_template)
-  content         = templatefile(
-                    "${path.module}/ansible_inventory.tftpl",
-                        { 
-                            user = "ubuntu"
-                            prefix = "swarm"
-                            nodes = aws_instance.instance_web_template.*.public_ip
-                        }
-                     )
+  count = length(aws_instance.instance_web_template)
+  content = templatefile(
+    "${path.module}/ansible_inventory.tftpl",
+    {
+      user   = "ubuntu"
+      prefix = "swarm"
+      nodes  = aws_instance.instance_web_template.*.public_ip
+    }
+  )
   filename        = "${path.module}/inventory"
   file_permission = 0744
 }

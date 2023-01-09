@@ -9,7 +9,8 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 env:
-  working_directory: './labs/aws/aws-kali'
+  working_directory: 'labs/aws-kali'
+  working_directory_module: './'
   TF_TOKEN: ${{ secrets.TF_API_TOKEN }}
 
 jobs:
@@ -43,6 +44,9 @@ jobs:
         working-directory: ${{ env.working_directory }}
 
       - name: Terraform Plan
+        if: |
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.draft == false
         id: plan
         run: terraform plan -no-color
         continue-on-error: true
@@ -107,4 +111,66 @@ jobs:
                 body: output
               })
             }
+
+    check_format_tf_modules_aws: 
+      runs-on: ubuntu-latest
+      name: Terraform Syntax Check
+      permissions:
+        pull-requests: write
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+        - uses: hashicorp/setup-terraform@v2
+
+        - name: Terraform fmt
+          id: fmt
+          run: terraform fmt -check --recursive
+          continue-on-error: true
+          working-directory: ${{ env.working_directory_module }}
+
+        - uses: actions/github-script@v6
+          if: |
+            github.event_name == 'pull_request' &&
+            github.event.pull_request.draft == false
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+              // 1. Retrieve existing bot comments for the PR
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              })
+              const botComment = comments.find(comment => {
+                return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+              })
+
+              // 2. Prepare format of the comment
+              const output = `#### Terraform Modules Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+              <details><summary>Validation Output</summary>
+
+              \`\`\`\n
+              ${{ steps.fmt.outputs.stdout }}
+              \`\`\`
+
+              </details>
+
+              *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+              // 3. If we have a comment, update it, otherwise create a new one
+              if (botComment) {
+                github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: output
+                })
+              } else {
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: output
+                })
+              }
 

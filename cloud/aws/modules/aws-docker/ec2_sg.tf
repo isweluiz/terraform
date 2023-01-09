@@ -6,14 +6,14 @@ resource "aws_security_group" "sg_lab" {
   dynamic "ingress" {
     for_each = var.ingress_docker_sg
     iterator = port
-  content {
-    from_port   = port.value
-    to_port     = port.value
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+    content {
+      from_port   = port.value
+      to_port     = port.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
 
-}
+  }
 
   egress {
     from_port        = 0
@@ -41,14 +41,14 @@ resource "aws_security_group" "sg_lab_runner" {
   dynamic "ingress" {
     for_each = var.ingress_runner_sg
     iterator = port
-  content {
-    from_port   = port.value
-    to_port     = port.value
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+    content {
+      from_port   = port.value
+      to_port     = port.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
 
-}
+  }
 
   egress {
     from_port        = 0
