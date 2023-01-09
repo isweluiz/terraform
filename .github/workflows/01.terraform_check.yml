@@ -1,0 +1,62 @@
+name: Check terraform file formatting
+
+on:
+  push:
+    branches: 
+    - main
+    - dev*
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+env:
+  working_directory: './'
+
+jobs:
+  check_format_tf_aws:
+    runs-on: ubuntu-latest
+    name: Terraform Syntax Check
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+
+      - name: Terraform fmt check
+        id: fmt-check
+        run: terraform fmt -check -recursive
+        working-directory: ${{ env.working_directory }}
+        continue-on-error: true
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ${{ env.working_directory }}
+
+      - name: Wrong formatting found
+        if: | 
+          ${{ failure() && steps.fmt-check.outputs.failure-reason == 'failed' }} 
+        run: echo "terraform formatting check failed"
+
+      - name: Update Pull Request
+        id: update-pull-request
+        uses: actions/github-script@v6
+        if: |
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.draft == false
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `##### terraform syntax check 🖌\`${{ steps.fmt-check.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+

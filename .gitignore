@@ -1,0 +1,8 @@
+.terraform
+*.tfstate
+*.tfstate.backup
+terraform.tfstate
+ansible-pub
+ssh.* 
+ansible-pub-aws*
+ansible-pub-aws.pub
